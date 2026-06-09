@@ -1,0 +1,27 @@
+{
+  "_comment": "TEMPLATE for .claude/settings.json (Claude Code deny/allow rules). Remove this _comment key before use. Replace the allow-list REPLACE_ME entries with your repo's real verification commands (test, lint, type-check). Deny rules block reads/edits of secret files and dangerous shell operations.",
+  "permissions": {
+    "deny": [
+      "Read(.env*)",
+      "Edit(.env*)",
+      "Write(.env*)",
+      "Read(**/*secret*)",
+      "Read(**/*credential*)",
+      "Read(**/*vault*token*)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Bash(rm -rf *)",
+      "Bash(git push *)",
+      "Bash(git push)"
+    ],
+    "allow": [
+      "Bash(REPLACE_ME_test_command*)",
+      "Bash(REPLACE_ME_lint_command*)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(grep *)",
+      "Bash(find *)",
+      "Bash(wc *)"
+    ]
+  }
+}
