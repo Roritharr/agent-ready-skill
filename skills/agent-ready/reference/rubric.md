@@ -8,9 +8,9 @@ This rubric works on any codebase, any language. Use it to audit how well an AI 
 
 | # | Dimension | 0 - Red | 1 - Yellow | 2 - Green |
 |---|-----------|---------|------------|-----------|
-| 1 | **Root context file** | No `AGENTS.md` / `CLAUDE.md` or equivalent | Exists but generic, too long, or outdated | Terse, focused on the non-obvious, under ~100 lines |
+| 1 | **Root context file** | No `AGENTS.md` / `CLAUDE.md` or equivalent | Exists but generic, too long, outdated, or over-constrained (blanket style bans, conflicts with other context files) | Terse, non-obvious only, judgment-framed, under ~100 lines |
 | 2 | **Subdirectory context** | None | One or two, but inconsistent | Key areas have focused context files that load lazily |
-| 3 | **Rules / conditional context** | None | Some rules exist but no path scoping | `.claude/rules/` or `.cursor/rules/` with path-scoped activation |
+| 3 | **Rules / conditional context** | None | Some rules exist but no path scoping | `.claude/rules/` or `.cursor/rules/` with path-scoped activation; hard rules reserved for safety |
 
 ## Layer 2 - Code Structure
 
@@ -60,3 +60,4 @@ This rubric works on any codebase, any language. Use it to audit how well an AI 
 2. Validate and adjust each score with your own judgment. You know your codebase.
 3. Note per-layer subtotals. The weakest layer is your priority.
 4. Layer 1 has the fastest ROI (minutes to improve). Layer 2 has the deepest ROI (structural improvements help every future task).
+5. In Claude Code, `/doctor` automates the rightsizing part of Layer 1 (CLAUDE.md and skills). Use this rubric for the full four-layer picture.

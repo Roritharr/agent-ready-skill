@@ -22,6 +22,14 @@ Agent-readiness is not one file. It is four reinforcing layers:
 
 **Guiding principle (do not skip):** a context file should contain only what an agent *cannot infer by reading the code*. Custom commands, non-obvious conventions, forbidden patterns, and institutional "why" earn their place. Directory trees, architecture tours, and endpoint lists do not (the agent can explore those, and padding them in measurably lowers task success). Terse and opinionated beats comprehensive.
 
+Three corollaries, from Anthropic's context-engineering guidance for the Claude 5 generation of models:
+
+- **Judgment over rules.** Frame style and convention guidance as judgment ("match the comment density of the surrounding code"), not blanket bans ("NEVER write comments"). Modern models handle these decisions well; reserve hard NEVER rules for the safety layer, where the worst case genuinely matters. Conflicting instructions across files are worse than either alone - the agent must reconcile them before acting - so when adding a rule, check nothing else already says it differently.
+- **Progressive disclosure.** Load context when needed, not upfront: subdirectory context files, path-scoped rules, and skills referenced from the root file. When a root-file section grows long (an involved verification procedure, a deploy runbook), split it into its own file and reference it.
+- **References over prose.** A real file is a higher-fidelity spec than a description of it. Point at exemplar code ("new endpoints mirror `src/api/users.ts`") instead of describing the pattern at length; the same goes for specs, where a test suite or mockup beats a narrative document.
+
+The context file is committed, team-shared knowledge. Personal preferences and session-specific facts belong in the agent's own memory feature (Claude Code auto-saves these), not in the context file.
+
 The skill bundles two helpers next to this file. Read them when you need them:
 - `reference/rubric.md` - the 12-dimension, 4-layer scoring rubric used in audit mode.
 - `templates/` - starting points for every artifact. Treat them as scaffolding to adapt, never as files to copy verbatim.
@@ -108,7 +116,7 @@ Finish with the **summary** (see below). There is no before/after test in bootst
 Score all 12 dimensions, 0 / 1 / 2, with **specific evidence** (file names, line counts, observations) for each. Read the actual repo to score; do not assume. The dimensions, by layer:
 
 **Layer 1 - Context files**
-1. Root context file - does `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or `.github/copilot-instructions.md` exist and is it terse and useful?
+1. Root context file - does `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or `.github/copilot-instructions.md` exist, and is it terse, non-obvious-only, and judgment-framed? Flag blanket style bans and instructions that conflict with other context files or rules.
 2. Subdirectory context - any nested context files for distinct areas? `glob **/{AGENTS,CLAUDE}.md`, count non-root hits.
 3. Rules / conditional context - `.claude/rules/` or `.cursor/rules/` with path-scoped activation?
 
@@ -129,6 +137,8 @@ Score all 12 dimensions, 0 / 1 / 2, with **specific evidence** (file names, line
 
 Produce a markdown scorecard: per-dimension table with evidence, per-layer subtotals (each out of 6), grand total out of 24, and the **top 3 lowest-scoring dimensions** with a one-line fix for each. Save it as `AGENT_READINESS.md` at the repo root (or print it and ask where they want it). Then ask the user to adjust any scores: they are the expert on their own codebase.
 
+If the user runs Claude Code, mention `/doctor`: it automatically rightsizes `CLAUDE.md` files and skills. This audit is complementary - it covers all four layers, not just the context files.
+
 ### B2. Build the gaps (preservation pattern is REQUIRED)
 
 Walk the four layers and fill what the audit flagged, prioritizing the lowest-scoring layer. Use the templates as starting points and the audit evidence to fill them with this repo's real details (the real test command discovered from `Makefile` / `package.json` / `pyproject.toml` / etc., the real auth model, the actual large file to avoid).
@@ -145,9 +155,9 @@ Walk the four layers and fill what the audit flagged, prioritizing the lowest-sc
 4. Act on their choice. For replace/merge, always create the timestamped backup first (`cp <path> <path>.bak.$(date +%Y%m%d-%H%M%S)`) and tell them where it is. For settings files especially, prefer merge so you never make an agent more permissive than the team intends.
 
 Build order:
-- **L1** - root context file (terse, non-obvious only), then one subdirectory context file for the area with the most tech debt (the largest source files), then `.claude/rules/` (one always-loaded security rule; one path-scoped rule using real globs from this repo). Apply the Step 2 convention and Step 3 posture.
+- **L1** - root context file (terse, non-obvious only), then one subdirectory context file for the area with the most tech debt (the largest source files), then `.claude/rules/` (one always-loaded security rule; one path-scoped rule using real globs from this repo). Apply the Step 2 convention and Step 3 posture. Where a pattern has a good in-repo example, point at the exemplar file instead of describing it.
 - **L2** - note the worst file-size offenders in the relevant context file as "do not add to X, create a new file." You are documenting structure, not refactoring it (offer refactors separately if asked).
-- **L3** - discover the real verification commands and add a `## Verification Commands` section to the root context file.
+- **L3** - discover the real verification commands and add a `## Verification Commands` section to the root context file. If verification is more than a handful of commands (multi-step procedures, environment setup), keep the everyday commands in the root file and split the rest into a referenced file or skill (progressive disclosure).
 - **L4** - apply the Step 3 choice (forbidden-ops docs always; `.claude/settings.json` and/or pre-commit hook and/or Cursor rules per their answer), filling the allow-list with the real commands found in L3.
 
 ### B3. Verify (the before/after test)

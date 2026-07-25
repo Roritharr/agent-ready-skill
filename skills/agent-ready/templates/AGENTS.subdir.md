@@ -9,6 +9,7 @@ Keep it under ~30 lines. Only directory-specific facts an agent cannot infer.
 # <Directory name> - local context
 
 - <The pattern specific to this directory that differs from the rest of the repo>
+- <The exemplar file in here to mirror when adding new code>
 - <The large or legacy file in here to avoid extending, if any>
 - <Where the tests for this code live, and how to run just them>
 - <Error-handling / naming convention unique to this area>

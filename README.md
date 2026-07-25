@@ -17,6 +17,12 @@ Agent-readiness is not one file. It is four reinforcing layers:
 
 The guiding principle throughout: a context file should hold **only what an agent cannot infer by reading the code**. Custom commands, non-obvious conventions, forbidden patterns, and institutional "why" earn their place. Directory trees and architecture tours do not. Terse beats comprehensive.
 
+Three corollaries, following Anthropic's context-engineering guidance for the Claude 5 model generation:
+
+- **Judgment over rules** - frame style guidance as judgment ("match the surrounding code"), not blanket bans; hard NEVERs are reserved for the safety layer. Conflicting instructions across files cost more than either alone.
+- **Progressive disclosure** - subdirectory files, path-scoped rules, and referenced skills load context when it is needed, not upfront.
+- **References over prose** - point at exemplar files instead of describing patterns; a real file is a higher-fidelity spec than a paragraph about it.
+
 ## Install
 
 The skill is the folder `skills/agent-ready/`. Put it where Claude Code looks for skills.
@@ -93,7 +99,7 @@ install.sh                          # copies the skill into ~/.claude/skills/
 
 ## Background
 
-The four-layer model and the 12-dimension rubric come from a hands-on "get your codebase agent-ready" workshop. This repo distills that material into one reusable, vendor-neutral skill with no ties to any specific company, codebase, or course.
+The four-layer model and the 12-dimension rubric come from a hands-on "get your codebase agent-ready" workshop. This repo distills that material into one reusable, vendor-neutral skill with no ties to any specific company, codebase, or course, updated for Anthropic's Claude 5-era context-engineering guidance (judgment over rules, progressive disclosure, references over prose).
 
 ## License
 
